@@ -1,0 +1,33 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: update (Ubuntu)
+    tags: update 
+    apt:
+      state: latest
+      update_cache: yes
+      upgrade: dist
+    changed_when: false
+    when: ansible_distribution == "Ubuntu"
+
+  - name: update (CentOS) 
+    tags: update
+    dnf:
+      update_only: yes
+      update_cache: yes
+      use_backend: dnf4
+    changed_when: false
+    when: ansible_distribution == "CentOS"
+
+- hosts: all 
+  become: true
+  roles:
+    - role: Elastic
+      tags: elastic
+    - role: Kibana
+      tags: kibana
+    - role: Logstash
+      tags: logstash
